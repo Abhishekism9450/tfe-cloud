@@ -2,6 +2,18 @@
 - name: Test TF CLI
   hosts: localhost
   tasks:
+    - name: Ensure .terraform.d directory exists
+      file:
+        path: "{{ lookup('env', 'HOME') }}/.terraform.d"
+        state: directory
+        mode: '0755'
+
+    - name: Template credentials.tfrc.json
+      ansible.builtin.template:
+        src: /tfe_project/credentials.tfrc.json.j2
+        dest: "~/.terraform.d/credentials.tfrc.json"
+        mode: '0600'
+
     - name: Template main.tf
       ansible.builtin.template:
         src: ./tfe_project/main.tf.j2
